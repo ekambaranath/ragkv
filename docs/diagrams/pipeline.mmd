@@ -1,0 +1,42 @@
+flowchart LR
+    subgraph A ["① retrieve and lay out"]
+        direction TB
+        Q(["question"]):::data
+        DB[("document<br/>store")]:::data
+        RET["retriever / reranker<br/><i>already in every RAG stack</i>"]:::ours
+        LAY["prompt layout<br/>prefix · chunk 1 … K · question<br/><i>token span of each chunk recorded</i>"]
+        Q --> RET
+        DB --> RET
+        RET -- "top-K chunks<br/>+ scores" --> LAY
+    end
+
+    subgraph B ["② two-stage prefill"]
+        direction TB
+        S1["<b>stage 1</b><br/>prefill the context<br/>→ full KV cache"]
+        S2["<b>stage 2</b><br/>question, all but its last token,<br/>against the full cache"]
+        S1 --> S2
+    end
+
+    subgraph C ["③ select · no attention matrix needed"]
+        direction TB
+        ALLOC["<b>allocate</b><br/>retriever scores → tokens per chunk<br/>z-score · softmax(z/τ) · floor · cap"]:::ours
+        SCORE["<b>score inside each chunk</b><br/>lowest key L2 norm first<br/><i>per layer, per KV head</i>"]
+        ALLOC --> SCORE
+    end
+
+    subgraph D ["④ answer from the small cache"]
+        direction TB
+        PRUNE["gather kept K/V<br/><b>compressed KV cache</b>"]
+        S3["<b>stage 3</b><br/>last prompt token goes<br/>through the compressed cache"]
+        DEC["greedy decode<br/><i>positions continue from the<br/>original prompt length</i>"]
+        ANS(["answer"]):::data
+        PRUNE --> S3 --> DEC --> ANS
+    end
+
+    LAY --> S1
+    S2 --> ALLOC
+    RET -. "scores" .-> ALLOC
+    SCORE --> PRUNE
+
+    classDef ours fill:#eef4fc,stroke:#2a78d6,stroke-width:2px
+    classDef data fill:#f5f5f3,stroke:#8a8984

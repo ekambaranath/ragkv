@@ -1,0 +1,12 @@
+flowchart LR
+    S["retriever scores<br/>s<sub>1</sub> … s<sub>K</sub>"]
+    Z["z-score<br/><i>scale-free: a cosine and a<br/>reranker logit behave alike</i>"]
+    W["softmax(z / τ)<br/>weights w<sub>i</sub>, Σ w<sub>i</sub> = 1<br/><i>τ small: winner takes most<br/>τ large: uniform</i>"]
+    F["floor<br/>every chunk first gets<br/>min(floor, length)"]
+    WF["water-filling<br/>rest shared ∝ w<sub>i</sub>;<br/>what a short chunk can't hold<br/>moves to the others"]
+    R["largest-remainder<br/>rounding to integers"]
+    B["budgets b<sub>i</sub><br/>Σ b<sub>i</sub> = ρ · N<br/>0 ≤ b<sub>i</sub> ≤ length<sub>i</sub>"]:::out
+
+    S --> Z --> W --> F --> WF --> R --> B
+
+    classDef out fill:#eef4fc,stroke:#2a78d6,stroke-width:2px

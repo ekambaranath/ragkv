@@ -1,0 +1,26 @@
+flowchart LR
+    subgraph P ["protected · always kept"]
+        pre["bos +<br/>instructions"]:::prot
+    end
+    subgraph C ["compressible · budget b<sub>i</sub> per chunk, Σ b<sub>i</sub> = ρ · (chunk tokens)"]
+        direction LR
+        c1["[1] chunk<br/>score high<br/>keeps a lot"]:::big
+        c2["[2] chunk<br/>score mid<br/>keeps some"]:::mid
+        c3["…"]:::mid
+        ck["[K] chunk<br/>score low<br/>keeps a floor"]:::small
+        c1 --- c2 --- c3 --- ck
+    end
+    subgraph Qs ["protected · always kept"]
+        direction LR
+        q["question<br/>tokens"]:::prot
+        last["last prompt token<br/><i>held out until<br/>after pruning</i>"]:::held
+        q --- last
+    end
+    pre --> c1
+    ck --> q
+
+    classDef prot fill:#ececea,stroke:#8a8984
+    classDef big fill:#b7d3f6,stroke:#2a78d6,stroke-width:2px
+    classDef mid fill:#dbe9fb,stroke:#2a78d6
+    classDef small fill:#f0f6fd,stroke:#2a78d6,stroke-dasharray: 4 3
+    classDef held fill:#fff4d6,stroke:#c98500,stroke-width:2px

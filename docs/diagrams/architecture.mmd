@@ -1,0 +1,22 @@
+flowchart TB
+    subgraph LIB ["src/ragkv  ·  the library"]
+        direction LR
+        DATA["<b>data/</b><br/>synthetic · hotpot<br/>retrievers"]
+        LAY["<b>layout.py</b><br/>token span<br/>of every chunk"]
+        ALLOC["<b>allocation.py</b><br/>scores → budgets"]
+        POL["<b>policies.py</b><br/>allocator + scorer"]
+        CO["<b>cache_ops.py</b><br/>gather · size"]
+        PIPE["<b>pipeline.py</b><br/>prefill · select · decode"]
+        MET["<b>metrics.py</b><br/>EM · F1"]
+        DATA --> LAY --> POL --> PIPE --> MET
+        ALLOC --> POL
+        CO --> POL
+        CO --> PIPE
+    end
+
+    subgraph SCR ["scripts/  ·  one command per phase"]
+        direction LR
+        S1["prepare_data.py"] --> S2["prior_analysis.py<br/><i>phase 1</i>"] --> S3["run_eval.py<br/><i>phases 2–4</i>"] --> S4["make_plots.py<br/><i>phase 5</i>"]
+    end
+
+    SCR -. "call" .-> LIB

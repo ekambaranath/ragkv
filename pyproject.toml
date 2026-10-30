@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ragkv"
+version = "0.1.0"
+description = "Retrieval-score KV-cache budgeting for RAG"
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.1",
+    "transformers>=4.44",
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+# only needed to prepare real datasets / dense rerankers
+eval = ["datasets", "sentence-transformers"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
