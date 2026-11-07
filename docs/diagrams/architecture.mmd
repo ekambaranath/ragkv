@@ -14,9 +14,9 @@ flowchart TB
         CO --> PIPE
     end
 
-    subgraph SCR ["scripts/  ·  one command per phase"]
+    subgraph SCR ["scripts/  ·  one command per step"]
         direction LR
-        S1["prepare_data.py"] --> S2["prior_analysis.py<br/><i>phase 1</i>"] --> S3["run_eval.py<br/><i>phases 2–4</i>"] --> S4["make_plots.py<br/><i>phase 5</i>"]
+        S1["prepare_data.py"] --> S2["prior_analysis.py<br/><i>which signal finds gold?</i>"] --> S3["run_eval.py<br/><i>policy sweep</i>"] --> S4["make_plots.py<br/><i>figures + tables</i>"]
     end
 
     SCR -. "call" .-> LIB

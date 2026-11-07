@@ -17,10 +17,10 @@ flowchart LR
         S1 --> S2
     end
 
-    subgraph C ["③ select · no attention matrix needed"]
+    subgraph C ["③ choose what to keep"]
         direction TB
         ALLOC["<b>allocate</b><br/>retriever scores → tokens per chunk<br/>z-score · softmax(z/τ) · floor · cap"]:::ours
-        SCORE["<b>score inside each chunk</b><br/>lowest key L2 norm first<br/><i>per layer, per KV head</i>"]
+        SCORE["<b>pick tokens inside each chunk</b><br/>random · key norm · SnapKV attention<br/><i>per layer, per KV head</i>"]
         ALLOC --> SCORE
     end
 
